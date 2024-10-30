@@ -14,7 +14,9 @@ jobs:
   test2:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{github.event.head_commit.message}}
+      - run: |
+          commit_message=$(git log -1 --pretty=%s)
+          echo "Commit message: $commit_message"
   test3:
     runs-on: ubuntu-latest
     steps:
