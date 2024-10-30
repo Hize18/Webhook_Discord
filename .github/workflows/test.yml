@@ -19,4 +19,4 @@ jobs:
   event_log:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{ toJson(github.event) }}"
+      - run: printf "%s\n" "${{ toJson(github.event) }}"
