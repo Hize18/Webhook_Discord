@@ -7,7 +7,15 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  test1:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "test notif"
+      - run: echo ${{github.job}}
+  test2:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{github.event.head_commit.message}}
+  test3:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{github.event.head_commit.author.name}}
