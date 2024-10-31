@@ -1,0 +1,19 @@
+name: Discord_Webhook
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  WH:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{"content": "Test Post in Action"}' \
+               $WEBHOOK_URL
