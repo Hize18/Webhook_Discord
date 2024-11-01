@@ -10,24 +10,29 @@ jobs:
   WH:
     runs-on: ubuntu-latest
     steps:
-      - env:
-          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      - name: Save commit message and description
+        shell: bash
+        env:
           COMMIT_MESSAGE: "${{ github.event.commits[0].message }}"
-          DATA:
         run: |
           TITLE=$(echo "$COMMIT_MESSAGE" | awk -v RS="\n\n" '{print $1; exit}')
           DESCRIPTION=$(echo "$COMMIT_MESSAGE" | awk -v RS="\n\n" 'NR>1 {print; exit}')
           echo "TITLE=$TITLE" >> $GITHUB_ENV
           echo "DESCRIPTION=$DESCRIPTION" >> $GITHUB_ENV
 
+      - name: Sending message
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DATA:
+        run: |
           curl -H "Content-Type: application/json" \
                -X POST \
                -d '{
                  "username": "GitHub_${{github.event.commits[0].author.name}}",
                  "embeds": [
                    {
-                     "title": "$TITLE",
-                     "description": "$DESCRIPTION",
+                     "title": "${{env.TITLE}}",
+                     "description": "${{env.DESCRIPTION}}",
                      "url": "https://github.com/${{ github.repository }}/actions"
                    }
                  ]
