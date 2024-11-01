@@ -12,19 +12,24 @@ jobs:
     steps:
       - env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          COMMIT_MESSAGE: "${{ github.event.commits[0].message }}"
           DATA:
         run: |
+          TITLE=$(echo "$COMMIT_MESSAGE" | awk -v RS="\n\n" '{print $1; exit}')
+          DESCRIPTION=$(echo "$COMMIT_MESSAGE" | awk -v RS="\n\n" 'NR>1 {print; exit}')
+          echo "TITLE=$TITLE" >> $GITHUB_ENV
+          echo "DESCRIPTION=$DESCRIPTION" >> $GITHUB_ENV
+
           curl -H "Content-Type: application/json" \
                -X POST \
                -d '{
-                 "username": "GitHub",
+                 "username": "GitHub_${{github.event.commits[0].author.name}}",
                  "embeds": [
                    {
-                     "title": "GitHub Actions Notification",
-                     "description": "Action details or summary here",
+                     "title": "$TITLE",
+                     "description": "$DESCRIPTION",
                      "url": "https://github.com/${{ github.repository }}/actions"
                    }
                  ]
                }' \
                $WEBHOOK_URL
-               
