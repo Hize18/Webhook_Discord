@@ -15,10 +15,13 @@ jobs:
         env:
           COMMIT_MESSAGE: "${{ github.event.commits[0].message }}"
         run: |
-          TITLE=$(echo "$COMMIT_MESSAGE" | awk 'BEGIN {RS="\n\n"; FS="\n\n"} {print $1}')
-          DESCRIPTION=$(echo "$COMMIT_MESSAGE" | awk 'BEGIN {RS="\n\n"; FS="\n\n"} {print $2}')
-          echo "TITLE=$TITLE" >> $GITHUB_ENV
-          echo "DESCRIPTION=$DESCRIPTION" >> $GITHUB_ENV
+          TITLE=$(echo "$COMMIT_MESSAGE" | sed -n '1p')
+          DESCRIPTION=$(echo "$COMMIT_MESSAGE" | sed -n '3,$p')
+          
+          echo "TITLE=${TITLE}" >> $GITHUB_ENV
+          echo "DESCRIPTION<<EOF" >> $GITHUB_ENV
+          echo "$DESCRIPTION" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Sending message
         env:
