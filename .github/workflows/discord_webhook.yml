@@ -15,8 +15,8 @@ jobs:
         env:
           COMMIT_MESSAGE: "${{ github.event.commits[0].message }}"
         run: |
-          TITLE=$(echo "$COMMIT_MESSAGE" | awk -v RS="\n\n" '{print $1; exit}')
-          DESCRIPTION=$(echo "$COMMIT_MESSAGE" | awk -v RS="\n\n" 'NR>1 {print; exit}')
+          TITLE=$(echo "$COMMIT_MESSAGE" | awk 'BEGIN {RS="\n\n"; FS="\n\n"} {print $1}')
+          DESCRIPTION=$(echo "$COMMIT_MESSAGE" | awk 'BEGIN {RS="\n\n"; FS="\n\n"} {print $2}')
           echo "TITLE=$TITLE" >> $GITHUB_ENV
           echo "DESCRIPTION=$DESCRIPTION" >> $GITHUB_ENV
 
